@@ -1,0 +1,22 @@
+.todo-item {
+  background-color: gray;
+  width: 150px;
+  margin: 20px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 3px black;
+}
+
+.todo-item__id {
+  width: 15px;
+  margin: 10px auto;
+}
+
+.todo-item__title {
+  margin: 10px;
+  text-align: center;
+}
+
+.todo-item:hover {
+  background-color: #fff;
+  transition: background-color, 0.4s;
+}
