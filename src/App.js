@@ -6,10 +6,10 @@ const USER_API = 'https://jsonplaceholder.typicode.com/users';
 const TODOS_API = 'https://jsonplaceholder.typicode.com/todos';
 class App extends React.Component {
   state = {
-    todoList: [],
-    usersList: [],
+    todos: [],
     isLoading: false,
     hasError: false,
+    isLoaded: false,
   };
 
   getTodosWithUsers = () => {
@@ -17,39 +17,54 @@ class App extends React.Component {
       isLoading: true,
     });
 
-    fetch(USER_API)
-      .then(response => response.json())
-      .then(date => this.setState({
-        usersList: date,
+    Promise.all([fetch(USER_API), fetch(TODOS_API)])
+      .then(responses => Promise.all(responses.map(respons => respons.json())))
+      .then(([usersDate, todosDate]) => this.setState({
+        todos: todosDate.map(item => (
+          {
+            ...item,
+            user: usersDate.find(user => user.id === item.userId),
+          }
+        )),
+        isLoading: false,
+        hasError: false,
+        isLoaded: true,
       }))
       .catch(() => this.setState({
         hasError: true,
         isLoading: false,
       }));
-
-    fetch(TODOS_API)
-      .then(response => response.json())
-      .then(date => this.setState(prevState => ({
-        todoList: date.map(item => (
-          {
-            ...item,
-            user: prevState.usersList.find(user => user.id === item.userId),
-          }
-        )),
-        isLoading: false,
-        hasError: false,
-      })));
   }
 
-  render() {
-    const { todoList, isLoading, hasError } = this.state;
-    console.log(todoList);
+  sortByTitle = todos => (
+    this.setState(prevState => ({
+      todos: prevState.todos.sort((a, b) => (a.title > b.title ? 1 : -1)),
+    }))
+  );
 
-    if (isLoading) {
-      return (
-        <p>Loading...</p>
-      );
-    }
+  sortByUser = todos => (
+    this.setState(prevState => ({
+      todos: prevState.todos.sort((a, b) => (a.user.name > b.user.name
+        ? 1
+        : -1)),
+    }))
+  );
+
+  sortByCompleted = todos => (
+    this.setState(prevState => ({
+      todos: prevState.todos.sort((a, b) => (a.completed > b.completed
+        ? -1
+        : 1)),
+    }))
+  );
+
+  render() {
+    const {
+      todos,
+      isLoading,
+      hasError,
+      isLoaded,
+    } = this.state;
 
     if (hasError) {
       return (
@@ -59,8 +74,11 @@ class App extends React.Component {
             type="button"
             className="button-load"
             onClick={this.getTodosWithUsers}
+            disabled={isLoading}
           >
-          Load
+            {isLoading
+              ? 'Loading...'
+              : 'Load'}
           </button>
         </>
       );
@@ -69,14 +87,25 @@ class App extends React.Component {
     return (
       <div className="App">
         <h1>Dynamic list of todos</h1>
-        <Todolist todoList={todoList} />
-        <button
-          type="button"
-          className="button-load"
-          onClick={this.getTodosWithUsers}
-        >
-        Load
-        </button>
+        <Todolist
+          todoList={todos}
+          isLoaded={isLoaded}
+          sortByTitle={this.sortByTitle}
+          sortByUser={this.sortByUser}
+          sortByCompleted={this.sortByCompleted}
+        />
+        {!isLoaded && (
+          <button
+            type="button"
+            className="button-load"
+            onClick={this.getTodosWithUsers}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? 'Loading...'
+              : 'Load'}
+          </button>
+        )}
       </div>
     );
   }
