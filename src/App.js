@@ -7,6 +7,7 @@ const TODOS_API = 'https://jsonplaceholder.typicode.com/todos';
 class App extends React.Component {
   state = {
     todos: [],
+    filteredTodos: [],
     isLoading: false,
     hasError: false,
     isLoaded: false,
@@ -26,6 +27,12 @@ class App extends React.Component {
             user: usersDate.find(user => user.id === item.userId),
           }
         )),
+        filteredTodos: todosDate.map(item => (
+          {
+            ...item,
+            user: usersDate.find(user => user.id === item.userId),
+          }
+        )),
         isLoading: false,
         hasError: false,
         isLoaded: true,
@@ -36,31 +43,35 @@ class App extends React.Component {
       }));
   }
 
-  sortByTitle = todos => (
+  sortByTitle = () => (
     this.setState(prevState => ({
-      todos: prevState.todos.sort((a, b) => (a.title > b.title ? 1 : -1)),
+      filteredTodos: prevState.filteredTodos
+        .sort((a, b) => (a.title > b.title ? 1 : -1)),
     }))
   );
 
-  sortByUser = todos => (
+  sortByUser = () => (
     this.setState(prevState => ({
-      todos: prevState.todos.sort((a, b) => (a.user.name > b.user.name
-        ? 1
-        : -1)),
+      filteredTodos: prevState.filteredTodos
+        .sort((a, b) => (a.user.name < b.user.name
+          ? -1
+          : 1)),
     }))
   );
 
-  sortByCompleted = todos => (
+  sortByCompleted = () => (
     this.setState(prevState => ({
-      todos: prevState.todos.sort((a, b) => (a.completed > b.completed
-        ? -1
-        : 1)),
+      filteredTodos: prevState.filteredTodos
+        .sort((a, b) => (a.completed > b.completed
+          ? -1
+          : 1)),
     }))
   );
 
   render() {
     const {
       todos,
+      filteredTodos,
       isLoading,
       hasError,
       isLoaded,
@@ -89,10 +100,12 @@ class App extends React.Component {
         <h1>Dynamic list of todos</h1>
         <Todolist
           todoList={todos}
+          filteredTodosList={filteredTodos}
           isLoaded={isLoaded}
           sortByTitle={this.sortByTitle}
           sortByUser={this.sortByUser}
           sortByCompleted={this.sortByCompleted}
+          resetList={this.resetList}
         />
         {!isLoaded && (
           <button

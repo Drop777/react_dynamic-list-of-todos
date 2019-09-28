@@ -4,37 +4,38 @@ import PropTypes from 'prop-types';
 import Todoitem from '../Todoitem/Todoitem';
 
 const Todolist = ({
-  todoList,
+  filteredTodosList,
   sortByTitle,
   isLoaded,
   sortByUser,
   sortByCompleted,
+  resetList,
 }) => (
   <div>
     {isLoaded && (
       <div className="buttons-sort">
         <button
           type="button"
-          onClick={() => sortByTitle(todoList)}
+          onClick={sortByTitle}
         >
         Sort by title
         </button>
         <button
           type="button"
-          onClick={() => sortByUser(todoList)}
+          onClick={sortByUser}
         >
         Sort by Name
         </button>
         <button
           type="button"
-          onClick={() => sortByCompleted(todoList)}
+          onClick={sortByCompleted}
         >
         Completed
         </button>
       </div>
     )}
     <div className="todo-list">
-      {todoList.map(todo => <Todoitem key={todo.id} todo={todo} />)}
+      {filteredTodosList.map(todo => <Todoitem key={todo.id} todo={todo} />)}
     </div>
   </div>
 );
