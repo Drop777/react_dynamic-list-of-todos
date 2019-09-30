@@ -1,3 +1,12 @@
 .App {
   text-align: center;
 }
+
+#root {
+  background-color: pink;
+}
+
+.button-load:hover {
+  cursor: pointer;
+}
+

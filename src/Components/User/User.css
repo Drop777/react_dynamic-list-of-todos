@@ -1,0 +1,8 @@
+.user {
+  text-align: center;
+}
+
+.user__username {
+  text-transform: uppercase;
+  overflow: hidden;
+}
