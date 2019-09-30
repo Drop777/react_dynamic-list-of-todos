@@ -5,10 +5,7 @@ import './Todoitem.css';
 
 const Todoitem = ({ todo }) => {
   const {
-    completed,
-    id,
-    title,
-    user,
+    completed, id, title, user,
   } = todo;
 
   return (
@@ -30,7 +27,15 @@ Todoitem.propTypes = {
     completed: PropTypes.bool,
     id: PropTypes.number,
     title: PropTypes.string,
-    user: PropTypes.object,
+    user: PropTypes.shape({
+      username: PropTypes.string,
+      name: PropTypes.string,
+      address: PropTypes.shape({
+        city: PropTypes.string,
+      }),
+      phone: PropTypes.string,
+      website: PropTypes.string,
+    }),
   }).isRequired,
 };
 

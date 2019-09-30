@@ -46,35 +46,27 @@ class App extends React.Component {
   sortByTitle = () => (
     this.setState(prevState => ({
       filteredTodos: prevState.filteredTodos
-        .sort((a, b) => (a.title > b.title ? 1 : -1)),
+        .sort((a, b) => (a.title).localeCompare(b.title)),
     }))
   );
 
   sortByUser = () => (
     this.setState(prevState => ({
       filteredTodos: prevState.filteredTodos
-        .sort((a, b) => (a.user.name < b.user.name
-          ? -1
-          : 1)),
+        .sort((a, b) => a.user.name.localeCompare(b.user.name)),
     }))
   );
 
   sortByCompleted = () => (
     this.setState(prevState => ({
       filteredTodos: prevState.filteredTodos
-        .sort((a, b) => (a.completed > b.completed
-          ? -1
-          : 1)),
+        .sort((a, b) => (a.completed > b.completed ? -1 : 1)),
     }))
   );
 
   render() {
     const {
-      todos,
-      filteredTodos,
-      isLoading,
-      hasError,
-      isLoaded,
+      todos, filteredTodos, isLoading, hasError, isLoaded,
     } = this.state;
 
     if (hasError) {
@@ -98,15 +90,6 @@ class App extends React.Component {
     return (
       <div className="App">
         <h1>Dynamic list of todos</h1>
-        <Todolist
-          todoList={todos}
-          filteredTodosList={filteredTodos}
-          isLoaded={isLoaded}
-          sortByTitle={this.sortByTitle}
-          sortByUser={this.sortByUser}
-          sortByCompleted={this.sortByCompleted}
-          resetList={this.resetList}
-        />
         {!isLoaded && (
           <button
             type="button"
@@ -118,6 +101,17 @@ class App extends React.Component {
               ? 'Loading...'
               : 'Load'}
           </button>
+        )}
+        {isLoaded && (
+          <Todolist
+            todoList={todos}
+            filteredTodosList={filteredTodos}
+            isLoaded={isLoaded}
+            sortByTitle={this.sortByTitle}
+            sortByUser={this.sortByUser}
+            sortByCompleted={this.sortByCompleted}
+            resetList={this.resetList}
+          />
         )}
       </div>
     );
